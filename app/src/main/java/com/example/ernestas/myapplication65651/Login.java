@@ -65,7 +65,6 @@ public class Login extends AppCompatActivity implements View.OnClickListener, Go
             }
         };
 
-
         if(firebaseAuth.getCurrentUser() != null) {
             //Profile activity here
             finish();
@@ -145,7 +144,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener, Go
                     }
                 });
     }
-    
+
     private void signIn() {
         Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient);
         startActivityForResult(signInIntent, RC_SIGN_IN);
