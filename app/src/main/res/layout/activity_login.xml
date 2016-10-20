@@ -9,8 +9,10 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    android:background="#171b3e"
-    tools:context="com.example.ernestas.myapplication65651.Login">
+    android:background="@drawable/bg"
+    tools:context="com.example.ernestas.myapplication65651.Login"
+    android:focusable="false"
+    android:soundEffectsEnabled="false">
 
     <TextView
         android:text="Register Here"
@@ -19,7 +21,8 @@
         android:id="@+id/tvRegisterHere"
         android:textColor="#fff"
         android:layout_below="@+id/tvNotHaveAccount"
-        android:layout_centerHorizontal="true" />
+        android:layout_centerHorizontal="true"
+        android:textStyle="bold" />
 
     <TextView
         android:text="You do not have account?"
@@ -50,52 +53,62 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:ems="10"
+        android:id="@+id/etEmail"
+        android:hint="Email"
+        android:textColor="#1f1f1f"
+        android:textColorHint="@android:color/background_light"
+        android:textColorLink="?attr/colorPrimary"
+        android:layout_above="@+id/etPassword"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+        android:inputType="textEmailAddress"
+        android:contextClickable="false"
+        android:cursorVisible="false" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ems="10"
         android:id="@+id/etPassword"
         android:inputType="textPassword"
         android:hint="Password"
         android:textColorHint="@android:color/background_light"
-        android:textColor="?attr/colorBackgroundFloating"
+        android:textColor="#1f1f1f"
         android:layout_centerVertical="true"
         android:layout_alignParentStart="true"
         android:layout_alignParentEnd="true"
         android:textColorLink="?attr/colorPrimary" />
+
 
     <Button
         android:text="Login"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/bLogin"
-        android:background="#363b6b"
+        android:background="#1f1f1f"
         android:textColor="#fff"
         android:textColorHighlight="#fff"
         android:textColorHint="#fff"
         android:textSize="16sp"
         android:textStyle="bold"
         android:layout_below="@+id/etPassword"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentEnd="true" />
+        android:layout_alignStart="@+id/tvNotHaveAccount"
+        android:layout_alignEnd="@+id/tvNotHaveAccount"
+        android:textAllCaps="false" />
 
-    <EditText
+    <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:ems="10"
-        android:id="@+id/etEmail"
-        android:hint="Email"
-        android:textColor="?attr/colorBackgroundFloating"
-        android:textColorHint="@android:color/background_light"
-        android:textColorLink="?attr/colorPrimary"
-        android:layout_above="@+id/etPassword"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentEnd="true"
-        android:inputType="textEmailAddress" />
-
-    <com.google.android.gms.common.SignInButton
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="29dp"
+        android:id="@+id/bGoogleLogin"
+        android:background="@drawable/common_plus_signin_btn_text_dark"
+        android:text="Sign in"
+        android:textColor="@android:color/background_light"
         android:layout_below="@+id/tvRegisterHere"
-        android:layout_centerHorizontal="true"
-        android:id="@+id/bGoogleLogin"></com.google.android.gms.common.SignInButton>
+        android:layout_marginTop="31dp"
+        android:layout_alignEnd="@+id/tvNotHaveAccount"
+        android:layout_alignStart="@+id/tvNotHaveAccount"
+        android:textAllCaps="false"
+        android:textStyle="bold" />
 
 
 </RelativeLayout>

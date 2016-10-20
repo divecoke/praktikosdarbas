@@ -1,5 +1,6 @@
 package com.example.ernestas.myapplication65651;
 
+import android.app.ProgressDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -31,6 +32,8 @@ public class ProfileSettings extends AppCompatActivity implements View.OnClickLi
 
     private DatabaseReference databaseReference;
 
+    public ProgressDialog progressDialog;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -54,7 +57,9 @@ public class ProfileSettings extends AppCompatActivity implements View.OnClickLi
         bSaveInformation.setOnClickListener(this);
 
         Firebase dataRef = firebase.child(user.getUid());
-
+        progressDialog = new ProgressDialog(this);
+        progressDialog.setMessage("Loading");
+        progressDialog.show();
         dataRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -71,6 +76,7 @@ public class ProfileSettings extends AppCompatActivity implements View.OnClickLi
                     String Address = map.get("address");
                     etAddress.setText(Address);
                 }
+                progressDialog.dismiss();
             }
 
             @Override

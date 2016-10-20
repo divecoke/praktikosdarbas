@@ -39,7 +39,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener, Go
     private FirebaseAuth firebaseAuth;
     private FirebaseAuth.AuthStateListener firebaseAuthListener;
 
-    private ProgressDialog progressdialog;
+    private ProgressDialog progressdialog, progDial;
 
     private static final int RC_SIGN_IN = 0;
     private GoogleApiClient mGoogleApiClient;
@@ -56,11 +56,6 @@ public class Login extends AppCompatActivity implements View.OnClickListener, Go
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
                 FirebaseUser user = firebaseAuth.getCurrentUser();
-                if (user != null) {
-                    Toast.makeText(Login.this, "Logged in with Google", Toast.LENGTH_LONG).show();
-                } else {
-                    Toast.makeText(Login.this, "User is logged out", Toast.LENGTH_LONG).show();
-                }
 
             }
         };
@@ -72,7 +67,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener, Go
         }
 
         progressdialog = new ProgressDialog(this);
-
+        progDial = new ProgressDialog(this);
         bLogin = (Button) findViewById(R.id.bLogin);
         etEmail = (EditText) findViewById(R.id.etEmail);
         etPassword = (EditText) findViewById(R.id.etPassword);
@@ -138,6 +133,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener, Go
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         Log.d("AUTH", "signInWithCredential:oncomplete: " + task.isSuccessful());
+                        progDial.dismiss();
                         finish();
                         Intent goInMainPage = new Intent(getApplicationContext(), MainActivity.class);
                         startActivity(goInMainPage);
@@ -146,6 +142,8 @@ public class Login extends AppCompatActivity implements View.OnClickListener, Go
     }
 
     private void signIn() {
+        progDial.setMessage("Logging in please wait..");
+        progDial.show();
         Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient);
         startActivityForResult(signInIntent, RC_SIGN_IN);
     }
@@ -166,7 +164,6 @@ public class Login extends AppCompatActivity implements View.OnClickListener, Go
     private void tvRegisterOn() {
         Intent goToRegister = new Intent(getApplicationContext(),Register.class);
         startActivity(goToRegister);
-        finish();
     }
 
     public void loginRequest() {
