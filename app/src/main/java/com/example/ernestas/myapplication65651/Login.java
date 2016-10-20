@@ -145,7 +145,6 @@ public class Login extends AppCompatActivity implements View.OnClickListener, Go
                     }
                 });
     }
-
     private void signIn() {
         Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient);
         startActivityForResult(signInIntent, RC_SIGN_IN);
