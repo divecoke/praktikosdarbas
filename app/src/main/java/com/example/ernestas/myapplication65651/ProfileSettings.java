@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.firebase.client.DataSnapshot;
@@ -32,7 +33,8 @@ public class ProfileSettings extends AppCompatActivity implements View.OnClickLi
 
     private DatabaseReference databaseReference;
 
-    public ProgressDialog progressDialog;
+
+    private ProgressBar progressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,16 +52,14 @@ public class ProfileSettings extends AppCompatActivity implements View.OnClickLi
         etFirstName = (EditText) findViewById(R.id.etFirstName);
         etLastName = (EditText) findViewById(R.id.etLastName);
         etAddress = (EditText) findViewById(R.id.etAddress);
-
+        progressBar = (ProgressBar) findViewById(R.id.progressBar);
 
         bSaveInformation = (Button) findViewById(R.id.bSaveInformation);
 
         bSaveInformation.setOnClickListener(this);
 
         Firebase dataRef = firebase.child(user.getUid());
-        progressDialog = new ProgressDialog(this);
-        progressDialog.setMessage("Loading");
-        progressDialog.show();
+        progressBar.setVisibility(View.VISIBLE);
         dataRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -76,7 +76,7 @@ public class ProfileSettings extends AppCompatActivity implements View.OnClickLi
                     String Address = map.get("address");
                     etAddress.setText(Address);
                 }
-                progressDialog.dismiss();
+                progressBar.setVisibility(View.GONE);
             }
 
             @Override

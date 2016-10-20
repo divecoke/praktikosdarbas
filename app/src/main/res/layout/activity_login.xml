@@ -111,7 +111,23 @@
         android:background="@drawable/common_google_signin_btn_text_light"
         android:textColorHighlight="@android:color/background_dark" />
 
+    <com.facebook.login.widget.LoginButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/bFacebookLogin"
+        android:layout_below="@+id/bGoogleLogin"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="13dp" />
 
+    <ProgressBar
+        android:id="@+id/progressBar"
+        style="?android:attr/progressBarStyleLarge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:indeterminate="true"
+        android:visibility="gone"/>
 
 
 </RelativeLayout>
