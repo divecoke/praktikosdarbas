@@ -139,6 +139,9 @@ public class Login extends AppCompatActivity implements View.OnClickListener, Go
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         Log.d("AUTH", "signInWithCredential:oncomplete: " + task.isSuccessful());
+                        finish();
+                        Intent goInMainPage = new Intent(getApplicationContext(), MainActivity.class);
+                        startActivity(goInMainPage);
                     }
                 });
     }
