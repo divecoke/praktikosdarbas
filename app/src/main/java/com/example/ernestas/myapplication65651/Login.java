@@ -121,6 +121,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener, Go
                 // Google Sign In failed, update UI appropriately
                 // ...
                 Log.d(TAG, "Google Login Failed");
+                progDial.dismiss();
             }
         }
     }
