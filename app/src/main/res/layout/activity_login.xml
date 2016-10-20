@@ -76,8 +76,7 @@
         android:textColor="#1f1f1f"
         android:layout_centerVertical="true"
         android:layout_alignParentStart="true"
-        android:layout_alignParentEnd="true"
-        android:textColorLink="?attr/colorPrimary" />
+        android:layout_alignParentEnd="true" />
 
 
     <Button
@@ -100,15 +99,19 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/bGoogleLogin"
-        android:background="@drawable/common_plus_signin_btn_text_dark"
         android:text="Sign in"
-        android:textColor="@android:color/background_light"
+        android:textColor="#1f1f1f"
         android:layout_below="@+id/tvRegisterHere"
         android:layout_marginTop="31dp"
         android:layout_alignEnd="@+id/tvNotHaveAccount"
+
         android:layout_alignStart="@+id/tvNotHaveAccount"
         android:textAllCaps="false"
-        android:textStyle="bold" />
+        android:textStyle="bold"
+        android:background="@drawable/common_google_signin_btn_text_light"
+        android:textColorHighlight="@android:color/background_dark" />
+
+
 
 
 </RelativeLayout>
