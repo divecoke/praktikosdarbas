@@ -39,6 +39,8 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 
+import java.util.Arrays;
+
 public class Login extends AppCompatActivity implements View.OnClickListener, GoogleApiClient.OnConnectionFailedListener {
     private Button bLogin;
     private EditText etEmail, etPassword;
@@ -66,6 +68,8 @@ public class Login extends AppCompatActivity implements View.OnClickListener, Go
         setContentView(R.layout.activity_login);
 
         firebaseAuth = FirebaseAuth.getInstance();
+
+
 
         firebaseAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
@@ -97,6 +101,8 @@ public class Login extends AppCompatActivity implements View.OnClickListener, Go
 
         bLogin.setOnClickListener(this);
         tvRegisterHere.setOnClickListener(this);
+
+        bFacebookLogin.setReadPermissions(Arrays.asList("email")); // kad nebutu null facebook email
 
         findViewById(R.id.bGoogleLogin).setOnClickListener(this);
 
