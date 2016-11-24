@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/activity_main"
     android:layout_width="wrap_content"
@@ -32,15 +33,6 @@
         android:layout_marginTop="154dp"
         android:id="@+id/tvViewEmail" />
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/tvViewEmail"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentStart="true"
-        android:layout_marginTop="60dp"
-        android:text="Email" />
-
     <Button
         android:text="Profile Settings"
         android:layout_width="wrap_content"
@@ -52,4 +44,21 @@
         android:layout_alignParentStart="true"
         android:layout_marginBottom="15dp"
         android:layout_alignParentEnd="true" />
+
+    <Button
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:id="@+id/bCapture"
+        android:background="@android:drawable/ic_menu_camera"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true" />
+
+    <ImageView
+        android:layout_width="400dp"
+        android:layout_height="400dp"
+        android:id="@+id/iwCapture"
+        android:layout_marginTop="28dp"
+        android:layout_below="@+id/bCapture"
+        android:layout_alignParentStart="true" />
+
 </RelativeLayout>

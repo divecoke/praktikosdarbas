@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.firebase.client.DataSnapshot;
@@ -26,6 +27,7 @@ import java.util.Map;
 public class ProfileSettings extends AppCompatActivity implements View.OnClickListener{
 
     EditText etFirstName, etLastName, etAddress;
+    TextView tvViewEmail;
     Button bSaveInformation;
 
     Firebase firebase;
@@ -53,8 +55,14 @@ public class ProfileSettings extends AppCompatActivity implements View.OnClickLi
         etLastName = (EditText) findViewById(R.id.etLastName);
         etAddress = (EditText) findViewById(R.id.etAddress);
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
-
+        tvViewEmail = (TextView) findViewById(R.id.tvViewEmail);
         bSaveInformation = (Button) findViewById(R.id.bSaveInformation);
+
+        if (user != null)  {
+            String email = user.getEmail();
+            String first = user.getDisplayName();
+            tvViewEmail.setText("Welcome: " + first);
+        }
 
         bSaveInformation.setOnClickListener(this);
 
