@@ -141,7 +141,7 @@ public class PostActivity extends AppCompatActivity implements View.OnClickListe
             filePath.putFile(uri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                 @Override
                 public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-
+                    
                     Uri downloadUri = taskSnapshot.getDownloadUrl();
 
                     IMAGE_URL = taskSnapshot.getStorage().child("pathSegments").child("4").getName();
