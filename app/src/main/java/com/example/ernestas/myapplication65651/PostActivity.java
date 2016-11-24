@@ -1,10 +1,14 @@
 package com.example.ernestas.myapplication65651;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Base64;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -26,6 +30,7 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Picasso;
 
+import java.io.ByteArrayOutputStream;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -33,10 +38,14 @@ import java.util.UUID;
 
 import java.util.Map;
 
+import static com.example.ernestas.myapplication65651.R.id.ivPostPhoto;
+
 public class PostActivity extends AppCompatActivity implements View.OnClickListener {
 
 
     private  String IMAGE_URL;
+
+    private String base64Image;
 
     private ImageView ivTakePhoto;
     private EditText etPostText;
@@ -119,12 +128,13 @@ public class PostActivity extends AppCompatActivity implements View.OnClickListe
 
         FirebaseUser user = firebaseAuth.getCurrentUser();
 
-        PostInformation postInformation = new PostInformation(user.getUid(), postText, IMAGE_URL, currentDateTime);
+        storeImageToFirebase();
 
+        PostInformation postInformation = new PostInformation(user.getUid(), postText, IMAGE_URL, currentDateTime, base64Image);
 
-            String uuid = UUID.randomUUID().toString();
-            databaseReference.child("posts").child(uuid).setValue(postInformation); //Saugojimas
-            Toast.makeText(this, "Information Saved", Toast.LENGTH_LONG).show();
+        String uuid = UUID.randomUUID().toString();
+        databaseReference.child("posts").child(uuid).setValue(postInformation); //Saugojimas
+        Toast.makeText(this, "Information Saved", Toast.LENGTH_LONG).show();
 
     }
 
@@ -144,11 +154,15 @@ public class PostActivity extends AppCompatActivity implements View.OnClickListe
                     
                     Uri downloadUri = taskSnapshot.getDownloadUrl();
 
-                    IMAGE_URL = taskSnapshot.getStorage().child("pathSegments").child("4").getName();
+                    /*IMAGE_URL = taskSnapshot.getDownloadUrl().getPathSegments().get(4);*/
 
                     System.out.println(IMAGE_URL);
 
+
+
                     Picasso.with(getApplicationContext()).load(downloadUri).fit().centerCrop().into(ivTakePhoto);
+
+
 
                     Toast.makeText(getApplicationContext(), "Upload Done...", Toast.LENGTH_LONG).show();
 
@@ -156,6 +170,22 @@ public class PostActivity extends AppCompatActivity implements View.OnClickListe
             });
 
         }
+    }
+
+    private void storeImageToFirebase() {
+
+
+
+
+        Bitmap bmp = ((BitmapDrawable) ivTakePhoto.getDrawable()).getBitmap();
+        ByteArrayOutputStream bYtE = new ByteArrayOutputStream();
+        bmp.compress(Bitmap.CompressFormat.JPEG, 100, bYtE);
+        bmp.recycle();
+        byte[] byteArray = bYtE.toByteArray();
+
+
+        base64Image = Base64.encodeToString(byteArray, Base64.DEFAULT);
+
     }
 
 

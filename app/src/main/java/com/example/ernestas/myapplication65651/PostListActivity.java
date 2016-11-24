@@ -1,14 +1,19 @@
 package com.example.ernestas.myapplication65651;
 
+import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Base64;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
@@ -24,6 +29,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 public class PostListActivity extends AppCompatActivity {
@@ -39,6 +45,8 @@ public class PostListActivity extends AppCompatActivity {
 
     protected ArrayList<String> posts = new ArrayList<>();
     protected ArrayList<Uri> img = new ArrayList<>();
+
+    private List<PostInformation> postList = new ArrayList<PostInformation>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,36 +65,36 @@ public class PostListActivity extends AppCompatActivity {
         ivPostPhoto = (ImageView) findViewById(R.id.ivPostPhoto);
         lv = (ListView) findViewById(R.id.lvAllPosts);
 
+        postList.clear();
+
 
         firebase.child("posts").addChildEventListener(new com.firebase.client.ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                    Map<String, String> map = dataSnapshot.getValue(Map.class);
-                    Map<Uri, Uri> maps = dataSnapshot.getValue(Map.class);
+                Map<String, String> map = dataSnapshot.getValue(Map.class);
 
 
-                    String news = null;
+                String news = null;
 
-                    PostInformation postInfo = new PostInformation(map.get("user_id"), map.get("postText"), news, map.get("postDate"));
+                /*displayEncodedImage(map.get("bit64"));*/
 
-                    posts.add(postInfo.getPostText());
+                PostInformation postInfo = new PostInformation(map.get("userID"),map.get("postText"), news, map.get("postDate"), map.get("bit64"));
+
+
+                postList.add(postInfo);
+
+
+                posts.add(postInfo.getPostText());
+
+
+
+
+
 
                 if(posts.size() > 0) {
 
-                    ArrayAdapter adapter = new ArrayAdapter(getApplicationContext(), R.layout.single_row, R.id.tvPostText, posts);
-                    lv.setAdapter(adapter);
-
-                   /* firebase.child("groups/pizza.png").getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                        @Override
-                        public void onSuccess(Uri uri) {
-                            // TODO: handle uri
-                        }
-                    }).addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception exception) {
-                            // Handle any errors
-                        }
-                    });*/
+                    /*ArrayAdapter adapter = new ArrayAdapter(getApplicationContext(), R.layout.single_row, R.id.tvPostText, posts);
+                    lv.setAdapter(adapter);*/
 
                 }
 
@@ -115,8 +123,60 @@ public class PostListActivity extends AppCompatActivity {
             }
         });
 
+        populateListView();
 
 
+    }
+
+    private void populateListView() {
+        ArrayAdapter<PostInformation> adapter = new MyListAdapter();
+        ListView list = (ListView) findViewById(R.id.lvAllPosts);
+        list.setAdapter(adapter);
+    }
+
+    private class MyListAdapter extends ArrayAdapter<PostInformation> {
+
+        public MyListAdapter() {
+            super(PostListActivity.this, R.layout.single_row, postList);
+        }
+
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+            // make sure we have a view to work with
+            View itemView = convertView;
+
+            if (itemView == null) {
+                itemView = getLayoutInflater().inflate(R.layout.single_row, parent, false);
+            }
+
+            //find a car
+            PostInformation currentPost = postList.get(position);
+
+            //fill the view
+            ImageView imageView = (ImageView)itemView.findViewById(R.id.ivPostPhoto);
+
+            byte[] decodedString = Base64.decode(currentPost.getBit64(), Base64.DEFAULT);
+            Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+
+            imageView.setImageBitmap(decodedByte);
+
+            TextView textView = (TextView)itemView.findViewById(R.id.tvPostText);
+            textView.setText(currentPost.getPostText());
+
+            return itemView;
+
+        }
+
+    }
+
+    private void displayEncodedImage(String bit64) {
+        byte[] decodedString = Base64.decode(bit64, Base64.DEFAULT);
+        Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+        if (decodedByte != null) {
+            ivPostPhoto.setImageBitmap(decodedByte);
+        } else {
+            System.out.print("bla bla");
+        }
 
     }
 

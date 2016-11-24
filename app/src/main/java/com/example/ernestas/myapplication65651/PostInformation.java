@@ -9,32 +9,35 @@ import java.util.Date;
  */
 
 public class PostInformation {
-    public String user_id;
+    public String userID;
     public String postText;
     public String postImageUrl;
     public String postDate;
+    public String bit64;
+
 
     public PostInformation() {
 
     }
 
-    public PostInformation(String user_id, String postText, String postImageUrl, String postDate) {
-        this.user_id = user_id;
+    public PostInformation(String userID, String postText, String postImageUrl, String postDate, String bit64) {
+        this.userID = userID;
         this.postText = postText;
         this.postImageUrl = postImageUrl;
         this.postDate = postDate;
+        this.bit64 = bit64;
     }
 
     public String getUserID() {
-        return user_id;
+        return userID;
     }
 
     public String getPostText() {
         return postText;
     }
 
-    public String getPostImageUrl() {
-        return postImageUrl;
+    public String getBit64() {
+        return bit64;
     }
 
 

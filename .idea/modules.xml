@@ -3,8 +3,10 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
       <module fileurl="file://$PROJECT_DIR$/googlesignin.iml" filepath="$PROJECT_DIR$/googlesignin.iml" />
       <module fileurl="file://$PROJECT_DIR$/googlesigninwork.iml" filepath="$PROJECT_DIR$/googlesigninwork.iml" />
+      <module fileurl="file://$PROJECT_DIR$/praktikosdarbas.iml" filepath="$PROJECT_DIR$/praktikosdarbas.iml" />
       <module fileurl="file://$PROJECT_DIR$/praktikosdarbas.iml" filepath="$PROJECT_DIR$/praktikosdarbas.iml" />
       <module fileurl="file://$PROJECT_DIR$/project-master.iml" filepath="$PROJECT_DIR$/project-master.iml" />
     </modules>
