@@ -66,7 +66,7 @@ public class ProfileSettings extends AppCompatActivity implements View.OnClickLi
 
         bSaveInformation.setOnClickListener(this);
 
-        Firebase dataRef = firebase.child(user.getUid());
+        Firebase dataRef = firebase.child("users").child(user.getUid()).child("user_information");
         progressBar.setVisibility(View.VISIBLE);
         dataRef.addValueEventListener(new ValueEventListener() {
             @Override
@@ -110,7 +110,7 @@ public class ProfileSettings extends AppCompatActivity implements View.OnClickLi
         } else if(TextUtils.isEmpty(address)) {
             Toast.makeText(this, "You must fill Address edit text bar", Toast.LENGTH_LONG).show();
         } else {
-            databaseReference.child(user.getUid()).setValue(userInformation); //Saugojimas
+            databaseReference.child("users").child(user.getUid()).child("user_information").setValue(userInformation); //Saugojimas
             Toast.makeText(this, "Information Saved", Toast.LENGTH_LONG).show();
         }
     }

@@ -2,6 +2,8 @@ package com.example.ernestas.myapplication65651;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.media.Image;
 import android.net.Uri;
 import android.os.Environment;
@@ -35,15 +37,17 @@ import java.util.Date;
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
     private FirebaseAuth firebaseAuth;
-    private Button bLogout, bProfileSettings, bCapture;
+    private Button bLogout, bProfileSettings, bCapture, bGoToPost, bPosts;
     private ImageView iwCapture;
     private ProgressDialog mProgress;
 
 
     private StorageReference mStorage;
-    private static final int REQUEST_IMAGE_CAPTURE = 99;
+    private static final int CAMERA_REQUEST_CODE = 99;
 
-    private static final int REQUEST_TAKE_PHOTO = 100;
+    static final int REQUEST_IMAGE_CAPTURE = 1;
+
+    public static final int GALLERY_INTENT = 2;
 
 
 
@@ -61,18 +65,21 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         //FirebaseUser user = firebaseAuth.getCurrentUser();
 
 
-
         mStorage = FirebaseStorage.getInstance().getReference();
 
         bLogout = (Button) findViewById(R.id.bLogout);
         bProfileSettings = (Button) findViewById(R.id.bProfileSettings);
         bCapture = (Button) findViewById(R.id.bCapture);
+        bGoToPost = (Button) findViewById(R.id.bGoToPost);
+        bPosts = (Button) findViewById(R.id.bPosts);
         iwCapture = (ImageView) findViewById(R.id.iwCapture);
         mProgress = new ProgressDialog(this);
 
         bLogout.setOnClickListener(this);
         bProfileSettings.setOnClickListener(this);
         bCapture.setOnClickListener(this);
+        bGoToPost.setOnClickListener(this);
+        bPosts.setOnClickListener(this);
 
     }
 
@@ -90,95 +97,46 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             startActivity(new Intent(getApplicationContext(), ProfileSettings.class));
         }
         if (v == bCapture) {
-            dispatchTakePictureIntent();
+            Intent intent = new Intent(Intent.ACTION_PICK);
+
+            intent.setType("image/*");
+
+            startActivityForResult(intent, GALLERY_INTENT);
+
+        }
+
+        if(v == bGoToPost) {
+            startActivity(new Intent(getApplicationContext(), PostActivity.class));
+        }
+
+        if(v == bPosts) {
+            startActivity(new Intent(getApplicationContext(), PostListActivity.class));
         }
     }
 
-
-    private String mCurrentPhotoPath;
-
-    private File createImageFile() throws IOException {
-        // Create an image file name
-        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-        String imageFileName = "JPEG_" + timeStamp + "_";
-        File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
-        File image = File.createTempFile(
-                imageFileName,  /* prefix */
-                ".jpg",         /* suffix */
-                storageDir      /* directory */
-        );
-
-        // Save a file: path for use with ACTION_VIEW intents
-        mCurrentPhotoPath = "file" + image.getAbsolutePath();
-        return image;
-    }
-
-    private void dispatchTakePictureIntent() {
-        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-
-        // Ensure that there's a camera activity to handle the intent
-        if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
-            // Create the File where the photo should go
-            File photoFile = null;
-            try {
-                photoFile = createImageFile();
-            } catch (IOException ex) {
-                // Error occurred while creating the File
-                ex.printStackTrace();
-            }
-            // Continue only if the File was successfully created
-            if (photoFile != null) {
-                Uri uri = FileProvider.getUriForFile(this,
-                        "com.example.ernestas.myapplication65651",
-                        photoFile);
-                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
-                startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE );
-            }
-        } else {
-            Toast.makeText(MainActivity.this, "bug", Toast.LENGTH_LONG).show();
-        }
-    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == GALLERY_INTENT && resultCode == RESULT_OK) {
 
-        if (resultCode == RESULT_OK) {
-            if (requestCode == REQUEST_IMAGE_CAPTURE ) {
-                mProgress.setMessage("uploading image");
-                mProgress.show();
+            Uri uri = data.getData();
 
-                Uri uri = data.getData();
+            StorageReference filePath = mStorage.child("Photos").child(uri.getLastPathSegment());
 
-                Date date = new Date();
-                String date_string = String.valueOf(date.getTime());
+            filePath.putFile(uri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
 
-                StorageReference filepath = mStorage.child("Photos").child(uri.getLastPathSegment());
+                    Uri downloadUri = taskSnapshot.getDownloadUrl();
 
-                filepath.putFile(uri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                    @Override
-                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                        mProgress.dismiss();
-                        Uri downloadUri = taskSnapshot.getDownloadUrl();
+                    Picasso.with(MainActivity.this).load(downloadUri).fit().centerCrop().into(iwCapture);
 
-                        Picasso.with(MainActivity.this).load(downloadUri).fit().centerCrop().into(iwCapture);
+                    Toast.makeText(MainActivity.this, "Upload Done...", Toast.LENGTH_LONG).show();
 
-                        Toast.makeText(MainActivity.this, "Upload finished!", Toast.LENGTH_LONG).show();
-                    }
-                }).addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Toast.makeText(MainActivity.this, "Upload failed!", Toast.LENGTH_LONG).show();
-                    }
-                });
-            } else {
-                Toast.makeText(MainActivity.this, "CAMERA REQUEST CODE != requestCode", Toast.LENGTH_LONG).show();
-            }
-        } else {
-            Toast.makeText(MainActivity.this, "result is not OK", Toast.LENGTH_LONG).show();
+                }
+            });
+
         }
-
-
-
     }
 }
