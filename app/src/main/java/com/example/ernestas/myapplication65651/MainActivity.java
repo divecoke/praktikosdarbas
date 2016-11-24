@@ -41,9 +41,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
 
     private StorageReference mStorage;
-    private static final int CAMERA_REQUEST_CODE = 99;
+    private static final int REQUEST_IMAGE_CAPTURE = 99;
 
-    static final int REQUEST_TAKE_PHOTO = 100;
+    private static final int REQUEST_TAKE_PHOTO = 100;
 
 
 
@@ -59,6 +59,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
 
         //FirebaseUser user = firebaseAuth.getCurrentUser();
+
 
 
         mStorage = FirebaseStorage.getInstance().getReference();
@@ -94,7 +95,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
 
-    String mCurrentPhotoPath;
+    private String mCurrentPhotoPath;
 
     private File createImageFile() throws IOException {
         // Create an image file name
@@ -108,7 +109,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         );
 
         // Save a file: path for use with ACTION_VIEW intents
-        mCurrentPhotoPath = image.getAbsolutePath();
+        mCurrentPhotoPath = "file" + image.getAbsolutePath();
         return image;
     }
 
@@ -131,8 +132,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         "com.example.ernestas.myapplication65651",
                         photoFile);
                 takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
-                startActivityForResult(takePictureIntent, REQUEST_TAKE_PHOTO);
+                startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE );
             }
+        } else {
+            Toast.makeText(MainActivity.this, "bug", Toast.LENGTH_LONG).show();
         }
     }
 
@@ -140,36 +143,42 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (requestCode == CAMERA_REQUEST_CODE && resultCode == RESULT_OK) {
+        if (resultCode == RESULT_OK) {
+            if (requestCode == REQUEST_IMAGE_CAPTURE ) {
+                mProgress.setMessage("uploading image");
+                mProgress.show();
 
-            mProgress.setMessage("uploading image");
-            mProgress.show();
+                Uri uri = data.getData();
 
-            Uri uri = data.getData();
+                Date date = new Date();
+                String date_string = String.valueOf(date.getTime());
 
-            Date date = new Date();
-            String date_string = String.valueOf(date.getTime());
+                StorageReference filepath = mStorage.child("Photos").child(uri.getLastPathSegment());
 
-            StorageReference filepath = mStorage.child("Photos").child(uri.getLastPathSegment());
+                filepath.putFile(uri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                    @Override
+                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                        mProgress.dismiss();
+                        Uri downloadUri = taskSnapshot.getDownloadUrl();
 
-            filepath.putFile(uri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                @Override
-                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                    mProgress.dismiss();
-                    Uri downloadUri = taskSnapshot.getDownloadUrl();
+                        Picasso.with(MainActivity.this).load(downloadUri).fit().centerCrop().into(iwCapture);
 
-                    Picasso.with(MainActivity.this).load(downloadUri).fit().centerCrop().into(iwCapture);
-
-                    Toast.makeText(MainActivity.this, "Upload finished!", Toast.LENGTH_LONG).show();
-                }
-            }).addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception e) {
-                    Toast.makeText(MainActivity.this, "Upload failed!", Toast.LENGTH_LONG).show();
-                }
-            });
-
+                        Toast.makeText(MainActivity.this, "Upload finished!", Toast.LENGTH_LONG).show();
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Toast.makeText(MainActivity.this, "Upload failed!", Toast.LENGTH_LONG).show();
+                    }
+                });
+            } else {
+                Toast.makeText(MainActivity.this, "CAMERA REQUEST CODE != requestCode", Toast.LENGTH_LONG).show();
+            }
+        } else {
+            Toast.makeText(MainActivity.this, "result is not OK", Toast.LENGTH_LONG).show();
         }
+
+
 
     }
 }
